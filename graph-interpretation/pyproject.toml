@@ -1,0 +1,63 @@
+# ============================================================
+# graph-interpretation —— 医学/生命科学图表解读器（v1.6.0）
+# ============================================================
+# 8 类图表解析器 + 多受众说明 + 中英文期刊图注
+# + TRIPOD/TRIPOD-AI 共 67+14 项评价 + SVG 重绘 + 端到端 docx/HTML
+# + bundled samples + demo/verify/validate + TRIPOD-AI sentinel
+# + diff 子命令 + HTML dark mode/响应式 + verify CI 阈值
+# + GitHub Actions + calibration 子图
+# ============================================================
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graph-interpretation"
+version = "1.6.0"
+description = "Interpret medical/life-science charts: 8 parsers, multi-audience captions, journal-style legends (CMA/CSCO/CEBM/Nature/Lancet), TRIPOD/TRIPOD-AI appraisal, SVG redraw, end-to-end docx/HTML export, bundled samples, JSON Schema validation."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "AIPOCH" },
+]
+keywords = [
+  "medical", "biomedical", "biostatistics", "kaplan-meier", "roc-curve",
+  "forest-plot", "machine-learning", "tripod-ai", "scientific-figures",
+  "caption-generation", "clinical-research",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "python-docx>=1.0",
+]
+
+[project.optional-dependencies]
+pdf = ["pdfplumber>=0.10"]
+svg2png = ["cairosvg>=2.7"]
+all = ["pdfplumber>=0.10", "cairosvg>=2.7", "pillow>=10"]
+
+[project.urls]
+Homepage = "https://github.com/AIPOCH/graph-interpretation"
+Issues = "https://github.com/AIPOCH/graph-interpretation/issues"
+
+[project.scripts]
+# 安装后可直接在命令行调用
+graph-interp = "scripts.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scripts*"]
+
+[tool.setuptools.package-data]
+# 把 bundled samples 打进 wheel；source distribution 由 MANIFEST.in 负责
+scripts = ["*.json", "*.svg", "*.csv"]

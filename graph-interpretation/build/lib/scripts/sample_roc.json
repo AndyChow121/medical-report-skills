@@ -1,0 +1,27 @@
+{
+  "title": "Diagnostic model ROC",
+  "auc": 0.86,
+  "auc_ci": [0.81, 0.91],
+  "optimal_cutoff": 0.45,
+  "sensitivity": 0.82,
+  "specificity": 0.78,
+  "delong_p": 0.012,
+  "events_per_predictor": 14,
+  "external_validation": true,
+  "gold_standard": "Histopathology confirmed",
+  "blinded": true,
+  "curves": [
+    {
+      "name": "Model A (index test)",
+      "auc": 0.86,
+      "ci": [0.81, 0.91],
+      "points": [[0,0],[0.05,0.18],[0.12,0.36],[0.22,0.55],[0.35,0.70],[0.50,0.82],[0.65,0.90],[0.80,0.96],[0.95,0.99],[1,1]]
+    },
+    {
+      "name": "Model B (baseline)",
+      "auc": 0.74,
+      "ci": [0.68, 0.80],
+      "points": [[0,0],[0.10,0.22],[0.22,0.40],[0.35,0.55],[0.50,0.65],[0.65,0.74],[0.80,0.84],[0.95,0.93],[1,1]]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+﻿id,question,status,note,raw_value
+TRIPOD-AI-1,是否明确声明所用模型类型（如 XGBoost / ResNet / Transformer）？,通过,model_type=XGBoost,XGBoost

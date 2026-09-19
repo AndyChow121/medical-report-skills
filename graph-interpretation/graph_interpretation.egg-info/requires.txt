@@ -1,0 +1,12 @@
+python-docx>=1.0
+
+[all]
+pdfplumber>=0.10
+cairosvg>=2.7
+pillow>=10
+
+[pdf]
+pdfplumber>=0.10
+
+[svg2png]
+cairosvg>=2.7

@@ -1,0 +1,9 @@
+{
+  "title": "ICU 死亡风险 ML 模型（缺字段）",
+  "auc": 0.88,
+  "auc_ci": [0.84, 0.92],
+  "model_type": "XGBoost",
+  "learning_rate": 0.01,
+  "epochs": 100,
+  "n": 5000
+}

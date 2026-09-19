@@ -1,0 +1,18 @@
+{
+  "title": "Differential expression (treatment vs control)",
+  "fc_threshold": 1.0,
+  "p_threshold": 0.05,
+  "fdr_method": "BH",
+  "points": [
+    {"gene": "BRCA1", "log2fc": 1.8, "neg_log10_p": 5.2},
+    {"gene": "TP53", "log2fc": -1.4, "neg_log10_p": 4.1},
+    {"gene": "EGFR", "log2fc": 2.5, "neg_log10_p": 7.6},
+    {"gene": "KRAS", "log2fc": 0.4, "neg_log10_p": 1.1},
+    {"gene": "PTEN", "log2fc": -2.1, "neg_log10_p": 6.3},
+    {"gene": "AKT1", "log2fc": 0.2, "neg_log10_p": 0.6},
+    {"gene": "MYC", "log2fc": 1.6, "neg_log10_p": 3.8},
+    {"gene": "RB1", "log2fc": -0.5, "neg_log10_p": 1.4},
+    {"gene": "CDKN2A", "log2fc": -2.8, "neg_log10_p": 8.9},
+    {"gene": "MDM2", "log2fc": 0.9, "neg_log10_p": 2.0}
+  ]
+}

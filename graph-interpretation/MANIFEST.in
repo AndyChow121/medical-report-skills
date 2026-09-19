@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include SKILL.md
+include pyproject.toml
+recursive-include references *.md
+recursive-include scripts *.py
+recursive-include scripts/parsers *.py
+recursive-include scripts *.json
+recursive-include scripts *.svg
+globinclude scripts/*.csv

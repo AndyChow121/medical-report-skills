@@ -1,0 +1,18 @@
+{
+  "ownerId": "613110",
+  "publishedAt": 1785741968492,
+  "slug": "graph-interpretation",
+  "version": "1.6.0",
+  "updatedAt": "2026-09-05",
+  "highlights": [
+    "8 类图表（KM/Forest/ROC/Box/Scatter/Bar/Heatmap/Volcano）的结构化统计解析",
+    "多受众说明（researchers/clinicians/patients/policy_makers）",
+    "期刊风格图注（Nature/Lancet/JAMA/Cell/NEJM/CMA/CSCO/CEBM/Generic）",
+    "批判性评价 checklist（Cochrane/GRADE/STARD/CONSORT/MIAME + TRIPOD-AI 14 项）",
+    "8 类图表的数据→SVG 重绘（统一 viewBox=680×480，纯 Python）",
+    "PDF 矢量抽取（pdfplumber）+ PNG/JPG 反向 OCR 提取关键数字",
+    "与 figure-legend-gen 双向桥接（to-legend 子命令）",
+    "v1.5.0: bundled samples（21 个打入 wheel）+ demo + verify + validate + HTML 单文件报告 + TRIPOD-AI sentinel docx",
+    "v1.6.0: diff 子命令 + HTML dark mode/响应式/print + verify CI 阈值 + GitHub Actions CI + calibration 子图"
+  ]
+}

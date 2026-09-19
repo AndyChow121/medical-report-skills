@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OS by treatment arm | graph-interpretation v1.6.0</title>
+<style>
+  :root {
+    --bg: #fafbfc;      --fg: #1c1c1c;
+    --accent: #3498db;  --h1: #2c3e50;  --h2: #34495e;  --h3: #5d6d7e;
+    --meta: #7f8c8d;    --card-bg: #ffffff;  --card-border: #e1e4e8;
+    --code-bg: #ecf0f1; --row-alt: #f6f8fa;
+    --pass: #27ae60;    --fail: #c0392b;     --skip: #7f8c8d;
+    --th-bg: #3498db;   --th-fg: #ffffff;    --footer: #95a5a6;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  /* auto 模式：跟随系统偏好 */
+  @media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] {
+    --bg: #16181d;      --fg: #e3e3e3;
+    --accent: #5dade2;  --h1: #ecf0f1;  --h2: #d5dbdb;  --h3: #aab7c4;
+    --meta: #95a5a6;    --card-bg: #1e2127;  --card-border: #2f343d;
+    --code-bg: #23272e; --row-alt: #22262d;
+    --pass: #48c78e;    --fail: #f14668;     --skip: #7a8290;
+    --th-bg: #2b6cb0;   --th-fg: #ffffff;    --footer: #6b7280;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+  }
+  /* 强制 dark（置于 auto 之后，优先级最高） */
+  html[data-theme="dark"] {
+    --bg: #16181d;      --fg: #e3e3e3;
+    --accent: #5dade2;  --h1: #ecf0f1;  --h2: #d5dbdb;  --h3: #aab7c4;
+    --meta: #95a5a6;    --card-bg: #1e2127;  --card-border: #2f343d;
+    --code-bg: #23272e; --row-alt: #22262d;
+    --pass: #48c78e;    --fail: #f14668;     --skip: #7a8290;
+    --th-bg: #2b6cb0;   --th-fg: #ffffff;    --footer: #6b7280;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+         "Microsoft YaHei", "Segoe UI", sans-serif;
+         max-width: 920px; margin: 0 auto; padding: 24px;
+         background: var(--bg); color: var(--fg); line-height: 1.65; }
+  h1 { color: var(--h1); border-bottom: 3px solid var(--accent);
+       padding-bottom: 8px; font-size: 1.7em; }
+  h2 { color: var(--h2); margin-top: 32px; border-left: 4px solid var(--accent);
+       padding-left: 12px; font-size: 1.25em; }
+  h3 { color: var(--h3); font-size: 1.05em; }
+  .meta { color: var(--meta); font-size: 0.9em; font-style: italic; }
+  .caption-box { background: var(--code-bg); border-left: 4px solid var(--accent);
+                 padding: 16px; margin: 16px 0; border-radius: 4px;
+                 white-space: pre-wrap; word-break: break-word; }
+  .audience { background: var(--card-bg); border: 1px solid var(--card-border);
+              border-radius: 6px; padding: 12px 16px; margin: 8px 0;
+              box-shadow: var(--shadow); }
+  .audience-label { font-weight: 600; color: var(--accent); margin-right: 8px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0;
+          background: var(--card-bg); box-shadow: var(--shadow); }
+  th, td { padding: 8px 12px; text-align: left;
+           border-bottom: 1px solid var(--card-border); }
+  th { background: var(--th-bg); color: var(--th-fg); font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  .pass { color: var(--pass); font-weight: 600; }
+  .fail { color: var(--fail); font-weight: 600; }
+  .skip { color: var(--skip); }
+  .score-pill { display: inline-block; padding: 3px 12px; border-radius: 12px;
+                background: var(--accent); color: #fff; font-weight: 700;
+                font-size: 0.9em; }
+  .score-low { background: var(--fail); }
+  .score-mid { background: #f39c12; }
+  .score-high { background: var(--pass); }
+  .figure-box { background: var(--card-bg); border: 1px solid var(--card-border);
+                border-radius: 6px; padding: 16px; margin: 16px 0;
+                text-align: center; box-shadow: var(--shadow); }
+  /* 图表是「印刷品」：SVG 恒定浅底，保证深色轴线与文字在任意主题下都可读 */
+  .figure-box svg { max-width: 100%; height: auto; background: #fff;
+                    border-radius: 3px; padding: 4px; }
+  .figure-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .footer { color: var(--footer); font-size: 0.85em; text-align: center;
+            margin-top: 32px; padding-top: 16px;
+            border-top: 1px solid var(--card-border); }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 720px) {
+    body { padding: 14px; line-height: 1.6; }
+    h1 { font-size: 1.35em; }
+    h2 { font-size: 1.12em; margin-top: 24px; }
+    .figure-row { grid-template-columns: 1fr; }
+    table { font-size: 0.88em; }
+    th, td { padding: 6px 8px; }
+    .caption-box { padding: 12px; }
+    .figure-box { padding: 10px; }
+  }
+  @media (max-width: 480px) {
+    .score-pill { font-size: 0.8em; padding: 2px 8px; }
+    .audience { padding: 10px 12px; }
+  }
+
+  /* ---------- 打印 ---------- */
+  @media print {
+    body { max-width: 100%; padding: 0; background: #fff; color: #000; }
+    .figure-box, .audience, table { box-shadow: none; }
+    h2 { page-break-after: avoid; }
+    table, .figure-box { page-break-inside: avoid; }
+  }
+</style>
+
+</head>
+<body>
+<h1>OS by treatment arm</h1>
+<p class="meta">
+  图表类型: <b>kaplan_meier</b> ·
+  编号: <b>1</b> ·
+  语言: <b>zh</b> ·
+  风格: <b>cma</b> ·
+  评价框架: <b>CONSORT + Cochrane RoB 2</b> ·
+  整体得分: <span class="score-pill score-high">80%</span> (4/8 通过)
+</p>
+
+<h2>1. 图注 / Caption</h2>
+<div class="caption-box">图1 OS by treatment arm本研究通过kaplan_meier对数据进行可视化呈现。研究对象及检测方法见正文。结果显示，HR=0.72（事件风险降低28%）。统计量：（HR=0.72，95% CI 0.58-0.89，p=0.003，n=480）。上述结果提示，Experimental 中位生存期: 19.6；Control 中位生存期: 14.2；风险表: {'Experimental': [240, 220, 180, 120], 'Control': [240, 200, 150, 90]}</div>
+
+<h2>2. 图表重绘 / Figure SVG</h2>
+<div class="figure-box"><h3>Figure 1</h3><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 480" font-family="Arial, sans-serif"><rect width="680" height="480" fill="#ffffff"/><text x="340" y="22" text-anchor="middle" font-size="16" fill="#222">OS by treatment arm</text><line x1="80" y1="420.0" x2="640" y2="420.0" stroke="#eee"/><text x="72" y="424.0" text-anchor="end" font-size="11" fill="#444">0.00</text><line x1="80" y1="325.0" x2="640" y2="325.0" stroke="#eee"/><text x="72" y="329.0" text-anchor="end" font-size="11" fill="#444">0.25</text><line x1="80" y1="230.0" x2="640" y2="230.0" stroke="#eee"/><text x="72" y="234.0" text-anchor="end" font-size="11" fill="#444">0.50</text><line x1="80" y1="135.0" x2="640" y2="135.0" stroke="#eee"/><text x="72" y="139.0" text-anchor="end" font-size="11" fill="#444">0.75</text><line x1="80" y1="40.0" x2="640" y2="40.0" stroke="#eee"/><text x="72" y="44.0" text-anchor="end" font-size="11" fill="#444">1.00</text><text x="80.0" y="438" text-anchor="middle" font-size="11" fill="#444">0</text><text x="173.3" y="438" text-anchor="middle" font-size="11" fill="#444">2</text><text x="266.7" y="438" text-anchor="middle" font-size="11" fill="#444">4</text><text x="360.0" y="438" text-anchor="middle" font-size="11" fill="#444">6</text><text x="453.3" y="438" text-anchor="middle" font-size="11" fill="#444">8</text><text x="546.7" y="438" text-anchor="middle" font-size="11" fill="#444">10</text><text x="640.0" y="438" text-anchor="middle" font-size="11" fill="#444">12</text><line x1="80" y1="40" x2="80" y2="420" stroke="#333"/><line x1="80" y1="420" x2="640" y2="420" stroke="#333"/><text x="360.0" y="464" text-anchor="middle" font-size="12" fill="#222">Time</text><text transform="translate(20,230.0) rotate(-90)" text-anchor="middle" font-size="12" fill="#222">Survival probability</text></svg></div>
+
+<h2>3. 受众解读 / Audiences</h2>
+<div class="audience"><span class="audience-label">researchers</span>【研究型解读】
+标题：OS by treatment arm
+主要效应：HR=0.72，95% CI 0.58-0.89，p=0.003，n=480
+关键注释：Experimental 中位生存期: 19.6；Control 中位生存期: 14.2；风险表: {'Experimental': [240, 220, 180, 120], 'Control': [240, 200, 150, 90]}；比例风险假设检验 p=0.42（&gt;0.05 表示满足）</div>
+<div class="audience"><span class="audience-label">clinicians</span>【临床医生解读】
+治疗使事件风险下降 28%（HR=0.72，具有统计学意义）。对符合条件的患者可考虑该方案；同时建议关注 NCCN/CSCO 指南推荐级别更新。</div>
+<div class="audience"><span class="audience-label">patients</span>【通俗解读】
+这种治疗能明显延长生存，约每 10 个人里有 3 个人能从治疗中得到明显帮助。
+（以上内容仅供了解参考，不替代医生面诊，请结合临床实际情况判断；具体治疗方案请遵医嘱。）</div>
+<div class="audience"><span class="audience-label">policy_makers</span>【政策视角解读】
+按当前效应推算，约每 3.6 人接受治疗可减少 1 例不良事件，在人群层面值得纳入医保目录或指南评估。</div>
+
+
+<h2>4. 评价清单 / Appraisal (8 items)</h2>
+<table>
+  <thead><tr>
+    <th>ID</th><th>判定</th><th>问题</th><th>备注</th>
+  </tr></thead>
+  <tbody><tr><td>KM-1</td><td>·</td><td>是否报告中位生存期与 95% CI？</td><td class='skip'></td></tr>
+<tr><td>KM-2</td><td>✓</td><td>是否提供风险表（at-risk table）？</td><td class='pass'>at_risk 已给出</td></tr>
+<tr><td>KM-3</td><td>✓</td><td>是否给出 log-rank p 值？</td><td class='pass'></td></tr>
+<tr><td>KM-4</td><td>✓</td><td>是否检验比例风险假设（Schoenfeld 残差）？</td><td class='pass'>Schoenfeld p=0.42</td></tr>
+<tr><td>KM-5</td><td>✗</td><td>是否报告删失率与删失原因？</td><td class='fail'>censoring_rate=None</td></tr>
+<tr><td>KM-6</td><td>·</td><td>随访时间是否足够（中位随访 ≥ 主要事件中位时间）？</td><td class='skip'></td></tr>
+<tr><td>KM-7</td><td>·</td><td>是否按意向治疗（ITT）原则分析？</td><td class='skip'></td></tr>
+<tr><td>KM-8</td><td>✓</td><td>HR 95% CI 是否过宽（＞2 倍中位比）？</td><td class='pass'>CI 宽度/效应=0.43</td></tr>
+</tbody>
+</table>
+
+<h2>5. 雷达图 / Radar Chart</h2>
+<div class="figure-box"><h3>TRIPOD-AI 14 维雷达图</h3><svg xmlns="http://www.w3.org/2000/svg" width="560" height="560" viewBox="0 0 680 680"><rect width="680" height="680" fill="#1E1E1E"/><text x="340" y="340" text-anchor="middle" fill="#E8E8E8" font-size="18">未检测到 TRIPOD-AI 条目（输入非 ML 预测模型？）</text></svg></div>
+
+<div class="footer">
+  Generated by graph-interpretation v1.5.0 ·
+  <a href="https://github.com/AIPOCH/graph-interpretation">graph-interpretation</a>
+</div>
+</body>
+</html>

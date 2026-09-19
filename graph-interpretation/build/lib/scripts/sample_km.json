@@ -1,0 +1,13 @@
+{
+  "title": "OS by treatment arm",
+  "hazard_ratio": 0.72,
+  "hr_ci": [0.58, 0.89],
+  "p_value": 0.003,
+  "n_total": 480,
+  "arms": [
+    {"name": "Experimental", "median_survival": 19.6},
+    {"name": "Control", "median_survival": 14.2}
+  ],
+  "at_risk": {"Experimental": [240, 220, 180, 120], "Control": [240, 200, 150, 90]},
+  "schoenfeld_p": 0.42
+}

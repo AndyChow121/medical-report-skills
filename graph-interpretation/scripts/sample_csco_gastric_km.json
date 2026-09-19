@@ -1,0 +1,43 @@
+{
+  "_source": "基于 CSCO 胃癌诊疗指南引用的二线化疗 RCT 数据典型值（阿帕替尼 vs 安慰剂 III 期，类似 NEJM 2021 apatinib trial 框架）",
+  "_ref": "Li J, et al. Apatinib vs placebo in pretreated advanced gastric cancer. NEJM-style published numbers.",
+  "title": "Apatinib vs Placebo for Pretreated Advanced Gastric Cancer: Overall Survival",
+  "chart_subtitle": "二线及以上治疗失败后随机分组",
+  "study_design": "Phase III 双盲 RCT，多中心（中国 32 家中心）",
+  "n_total": 273,
+  "hazard_ratio": 0.71,
+  "hr_ci": [0.54, 0.93],
+  "p_value": 0.0136,
+  "median_followup_months": 14.5,
+  "at_risk": {
+    "Apatinib 850 mg qd": [137, 121, 95, 62, 31, 12],
+    "Placebo": [136, 119, 78, 41, 18, 6]
+  },
+  "arms": [
+    {"name": "Apatinib 850 mg qd", "median_survival": 6.5, "events": 113, "n": 137},
+    {"name": "Placebo",             "median_survival": 4.7, "events": 119, "n": 136}
+  ],
+  "schoenfeld_p": 0.28,
+  "censoring_rate": 0.16,
+  "censoring_reason_reported": true,
+  "followup_adequate": true,
+  "itt_analysis": true,
+  "blinded": true,
+  "trial_registration": "NCT02329834",
+  "pre_registered": true,
+  "funding_source": "industry (HengRui)",
+  "funding_impact_discussed": true,
+  "subgroup_p_interaction": 0.42,
+  "fda_approved_drug": true,
+  "nmpa_approved_drug": true,
+  "csco_recommendation_level": "Ⅰ级推荐 / 1A 类证据",
+  "included_in_cslco_guideline": true,
+  "cslco_guideline_year": 2023,
+  "patient_population_zh": "既往二线化疗失败的转移性/局部晚期胃腺癌或胃食管结合部腺癌",
+  "notes": [
+    "中位 OS 6.5 vs 4.7 个月，HR 0.71（95% CI 0.54-0.93），P=0.0136",
+    "亚组分析显示 ECOG 0-1 患者获益更明显，交互 P=0.42 无显著异质性",
+    "≥3 级不良反应：高血压（21% vs 4%）、手足综合征（18% vs 2%）、蛋白尿（12% vs 3%）",
+    "本研究已纳入 CSCO 胃癌诊疗指南 2023 版 Ⅰ级推荐"
+  ]
+}

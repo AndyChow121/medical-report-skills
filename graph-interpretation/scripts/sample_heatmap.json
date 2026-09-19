@@ -1,0 +1,14 @@
+{
+  "title": "Gene expression matrix (z-score)",
+  "scale": "z-score",
+  "colormap": "RdBu",
+  "row_labels": ["BRCA1", "TP53", "EGFR", "KRAS", "PTEN"],
+  "col_labels": ["Ctrl_1", "Ctrl_2", "Trt_1", "Trt_2", "Trt_3"],
+  "matrix": [
+    [ 0.2, -0.1,  2.4,  2.1,  2.8],
+    [-0.4,  0.3, -1.6, -1.8, -2.0],
+    [ 0.1, -0.3,  1.8,  1.6,  1.9],
+    [ 0.5,  0.4, -0.9, -1.1, -0.8],
+    [-0.2,  0.1,  1.2,  1.4,  1.1]
+  ]
+}

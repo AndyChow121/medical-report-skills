@@ -1,0 +1,11 @@
+{
+  "name": "aipoch/graph-interpretation",
+  "version": "1.6.0",
+  "private": true,
+  "summary": "Interpret scientific graphs and charts with structured statistical parsing, multi-audience explanations, journal-style captions, critical appraisal, SVG redraw, and OCR extraction.",
+  "skills": {
+    "graph-interpretation": {
+      "path": "SKILL.md"
+    }
+  }
+}

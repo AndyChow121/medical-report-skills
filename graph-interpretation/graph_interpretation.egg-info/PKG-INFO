@@ -1,0 +1,416 @@
+Metadata-Version: 2.4
+Name: graph-interpretation
+Version: 1.6.0
+Summary: Interpret medical/life-science charts: 8 parsers, multi-audience captions, journal-style legends (CMA/CSCO/CEBM/Nature/Lancet), TRIPOD/TRIPOD-AI appraisal, SVG redraw, end-to-end docx/HTML export, bundled samples, JSON Schema validation.
+Author: AIPOCH
+License: MIT
+Project-URL: Homepage, https://github.com/AIPOCH/graph-interpretation
+Project-URL: Issues, https://github.com/AIPOCH/graph-interpretation/issues
+Keywords: medical,biomedical,biostatistics,kaplan-meier,roc-curve,forest-plot,machine-learning,tripod-ai,scientific-figures,caption-generation,clinical-research
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: python-docx>=1.0
+Provides-Extra: pdf
+Requires-Dist: pdfplumber>=0.10; extra == "pdf"
+Provides-Extra: svg2png
+Requires-Dist: cairosvg>=2.7; extra == "svg2png"
+Provides-Extra: all
+Requires-Dist: pdfplumber>=0.10; extra == "all"
+Requires-Dist: cairosvg>=2.7; extra == "all"
+Requires-Dist: pillow>=10; extra == "all"
+
+# graph-interpretation — 公开 API
+
+> 医学/生命科学图表结构化解读：解析 → 多受众说明 → 期刊风格图注 → 批判性评价 → SVG 重绘 → 端到端 docx/HTML 导出 → TRIPOD-AI 雷达图 → CSV → bundled samples → verify → validate
+
+**当前版本**：v1.6.0
+**Skill 目录**：`~/.workbuddy/skills/graph-interpretation/`
+**脚本入口**：`scripts/main.py`
+**pip 安装**：`pip install .`（在 Skill 根目录）→ 命令行 `graph-interp`
+
+---
+
+## 0. 一键安装（v1.4.0+）
+
+```bash
+cd ~/.workbuddy/skills/graph-interpretation
+pip install .                # 普通安装（含 21 个 bundled samples）
+pip install -e .             # 开发模式，改脚本即时生效
+pip install .[all]           # 含 PDF/OCR/PNG 转换
+graph-interp --help           # 14 个子命令
+```
+
+依赖管理：
+- 核心：`python-docx`（docx 导出）
+- 可选 `pdf`：`pdfplumber`（PDF 矢量路径抽取）
+- 可选 `svg2png`：`cairosvg`（SVG→PNG 嵌入用）
+- 可选 `all`：pdf + svg2png + pillow
+
+---
+
+## 一键命令速查
+
+| 用途 | 命令 |
+|------|------|
+| 解析 → JSON | `graph-interp interpret --type km --data sample_km.json` |
+| 期刊风格图注 | `graph-interp caption --type km --data sample_km.json --style cslco --language zh` |
+| 多受众说明 | `graph-interp audiences --type km --data sample_km.json --locale zh_CN` |
+| 批判性评价 | `graph-interp appraise --type roc --data sample_roc_ml.json` |
+| 渲染 SVG | `graph-interp render-svg --type km --data sample_km.json --out fig.svg` |
+| OCR 反向 | `graph-interp ocr --pdf article.pdf` / `--image fig.png` |
+| **端到端四档** | `graph-interp all --type roc --data sample_roc_ml.json --out all.json` |
+| **TRIPOD-AI CSV** | `graph-interp export-csv --type roc --data sample_roc_ml.json --out t_ai.csv` |
+| 导出 docx | `graph-interp to-legend --type km --data sample_km.json --mode docx --with-svg --style cma --language zh` |
+| **HTML 单文件报告** (v1.5.0) | `graph-interp to-legend --type roc_ml --mode html --with-svg --out fig.html` |
+| **TRIPOD-AI sentinel docx** (v1.5.0) | `graph-interp to-legend --type roc --data sample_roc_partial_ml.json --mode docx --ai-sentinel auto` |
+| **demo** (v1.5.0) | `graph-interp demo` / `graph-interp demo --type roc_ml` |
+| **verify** (v1.5.0) | `graph-interp verify --cleanup` |
+| **validate** (v1.5.0) | `graph-interp validate --list-schemas` / `--data X.json --type km` |
+| **diff** (v1.6.0) | `graph-interp diff left.json right.json [--type X] [--format table\|markdown\|json]` |
+| **HTML dark mode** (v1.6.0) | `graph-interp to-legend --type roc_ml --mode html --with-svg --theme dark` |
+| **verify CI 阈值** (v1.6.0) | `graph-interp verify --fail-on-low-score 0.7 --fail-on-missing 5` |
+| 自检 | `graph-interp check` |
+
+---
+
+## v1.6.0 新增子命令详解
+
+### `diff`：左右样本 appraisal 对照
+
+对比两份 JSON 报告（interpret + appraise 输出），定位字段差异：
+
+```bash
+graph-interp diff a.json b.json                          # table 格式
+graph-interp diff a.json b.json --format markdown        # Markdown 格式
+graph-interp diff a.json b.json --format json --out diff.json
+graph-interp diff sample_roc_partial_ml.json sample_roc_ml.json   # 自动推断类型
+```
+
+适用场景：
+- 同一图表前后两次评审对照（如加入新 checklist 后的回归）
+- 同类不同样本的 TRIPOD-AI 完整度对照（缺字段最多的样本优先补）
+- 跨类型比对会告警（如 km vs roc_ml → 不同 checklist 集合）
+
+Python API：
+```python
+from scripts._diff import diff_appraisals
+result = diff_appraisals(left_dict, right_dict)  # {"added": [...], "removed": [...], "changed": [...], "unchanged": [...]}
+```
+
+### HTML 报告 dark mode + 响应式
+
+CSS 变量体系 + `prefers-color-scheme` 自动 + 强制 `data-theme` + 移动端响应式 + print 样式：
+
+```bash
+graph-interp to-legend --type roc_ml --mode html --with-svg --theme auto     # 系统跟随
+graph-interp to-legend --type roc_ml --mode html --with-svg --theme dark     # 强制 dark
+graph-interp to-legend --type roc_ml --mode html --with-svg --theme light    # 强制 light
+```
+
+### `verify` 阈值（CI 友好）
+
+```bash
+graph-interp verify --fail-on-low-score 0.7     # 得分 < 0.7 即视为失败
+graph-interp verify --fail-on-missing 5         # 缺失字段 ≥ 5 即视为失败
+graph-interp verify --fail-on-low-score 0.5 --fail-on-missing 3  # 组合
+```
+
+退出码 = 失败样本数（0 = 全部通过），可直接 `|| exit 1` 阻断 CI。
+
+### GitHub Actions CI
+
+`.github/workflows/ci.yml`（Python 矩阵 3.10 / 3.11 / 3.12 / 3.13）：
+- 阶段 1：`pip install .[all]`
+- 阶段 2：`pytest tests/`（70 测试）
+- 阶段 3：`graph-interp verify --fail-on-low-score 0.5`
+- 阶段 4：`graph-interp validate` 循环 8 类 schema
+- 阶段 5：`graph-interp diff` 冒烟
+- 阶段 6：`python -m build --wheel`
+
+### calibration 子图
+
+ML 评估图表（ROC + calibration plot）并排输出。`render_calibration` 优先用 `calibration_points`（实测分位点），缺失时按 `calibration_slope / intercept / brier_score` 通过 Cox 校准回归 `logit(obs) = intercept + slope × logit(pred)` 合成；slope < 0.9 标"overfitted"、> 1.1 标"underfitted"。
+
+非 ML 场景（KM / Forest / Box / Bar / Heatmap / Volcano / 非 ML scatter）不误添加。
+
+---
+
+## v1.5.0 新增子命令详解
+
+### `demo`：bundled samples 一键跑通
+
+`pip install .` 后无需外网数据——21 个 sample 已打入 wheel：
+
+```bash
+graph-interp demo                          # 8 类基础 sample 摘要
+graph-interp demo --type roc_ml            # ML 场景深度 demo（额外 render-svg + docx）
+graph-interp demo --type csco_km           # CSCO 中文期刊场景 demo
+graph-interp demo --type km --out-dir ./out # 文档输出到指定目录
+```
+
+支持的 alias：`km / forest / roc / roc_ml / roc_partial_ml / box / scatter / bar / heatmap / volcano / csco_km / km_svg`。
+
+### `verify`：CI 自检
+
+遍历 10 个 bundled sample × 6 步链路（interpret + caption + audiences + appraise + render-svg + to-legend docx）：
+
+```bash
+graph-interp verify --cleanup              # 跑完后清理
+graph-interp verify --no-ml --no-zh        # 只跑 8 类基础 sample
+graph-interp verify --work-dir artifacts   # 保留产物
+```
+
+返回退出码 = 失败样本数（0 = 全部通过）。详见 `references/verify-recipe.md`。
+
+### `validate`：JSON Schema 校验
+
+```bash
+graph-interp validate --list-schemas       # 列出 8 类 schema
+graph-interp validate --show-schema roc_curve   # 查看 roc_curve schema 定义
+graph-interp validate --data data.json --type km   # 校验 JSON 文件
+graph-interp validate --data data.json --type roc_ml
+```
+
+校验内容：必填字段 + 类型 + 数字范围（minimum/maximum）+ 数组长度（minItems/maxItems）+ enum 限定。
+
+支持多描述形式（box: 五数概括/values；bar: series[]/values；volcano: gene/name）。
+
+### `to-legend --mode html`：单文件 HTML 报告
+
+```bash
+graph-interp to-legend --type roc_ml --mode html --with-svg \
+    --style cma --language zh --figure-number 3 --out fig3.html
+```
+
+生成自包含 HTML（inline CSS + SVG + 雷达图），可直接浏览器/微信分享。自动检测 ML 触发时内嵌 TRIPOD-AI 14 维雷达图。
+
+### `to-legend --mode docx --ai-sentinel`：TRIPOD-AI 字段缺失警示
+
+```bash
+graph-interp to-legend --type roc --data sample_roc_partial_ml.json \
+    --mode docx --style cma --language zh --ai-sentinel auto
+```
+
+自动检测逻辑：`_is_ml_model(raw)` + 14 项标准字段已报告数 < 7 时，并行输出 `<主docx>_sentinel.docx`，含：
+- 橙色标题"⚠️ TRIPOD-AI 字段缺失警示"
+- ML 触发方式（model_type / methodology / 超参字段）
+- 缺失字段清单（红色）/ 已报告字段清单（绿色）
+- 14 项空白模板（待人工补全的 3 列表格）
+- 5 步后续建议
+
+`--ai-sentinel {auto,force,off}`：auto 自动检测，force 强制生成，off 关闭。
+
+---
+
+## 公开数据模型
+
+外部 Skill / 脚本可直接 `from models import ...`：
+
+```python
+from models import (
+    StatisticalSummary, EffectEstimate,  # 数据契约（来自 parsers.base）
+    ChecklistItem, AppraisalResult,       # 评价模型（v1.3.0 统一）
+)
+```
+
+字段速览：
+
+```python
+@dataclass
+class StatisticalSummary:
+    chart_type: str            # "kaplan_meier" / "forest_plot" / "roc_curve" / ...
+    title: str
+    primary: EffectEstimate | None     # 主效应量（HR/OR/AUC/median 等）
+    secondary: list[EffectEstimate]    # 副效应量
+    notes: list[str]                   # 自由文字（来自论文/OCR）
+    raw: dict[str, Any]                # 完整原始字段（含 TRIPOD/TRIPOD-AI 字段）
+
+@dataclass
+class ChecklistItem:
+    id: str                     # "KM-1" / "FP-7" / "TRIPOD-AI-3" ...
+    question: str
+    passed: bool | None         # True=通过, False=不通过, None=未评估
+    note: str
+    framework: str              # "CONSORT" / "Cochrane RoB 2" / "GRADE" / "TRIPOD" / "TRIPOD-AI"
+
+@dataclass
+class AppraisalResult:
+    chart_type: str
+    framework: str              # 框架组合，例如 "STARD + TRIPOD + TRIPOD-AI"
+    items: list[ChecklistItem]
+    # 便捷属性：n_items / n_passed / n_failed / n_unchecked / overall_score
+    # 便捷方法：to_dict() / by_framework() 返回 dict[str, list[ChecklistItem]]
+```
+
+### ML 模型自动触发 TRIPOD-AI
+
+若 `raw["model_type"]` 含 `XGBoost / LightGBM / CatBoost / Random Forest / neural_network / ResNet / Transformer / BERT / LogisticRegression` 等关键词，**且** 图表类型为 `roc_curve` 或 `scatter_plot`，`appraisal.auto_evaluate()` 会自动追加 14 条 TRIPOD-AI 评价项。
+
+```python
+from appraisal import auto_evaluate, _TRIPOD_AI_AVAILABLE
+from parsers import PARSERS
+
+data = {
+    "title": "ICU mortality XGBoost", "auc": 0.91, "auc_ci": [0.88, 0.94],
+    "model_type": "XGBoost", "data_source": "MIMIC-IV",
+    "external_validation_temporal": True, "explainability_method": "SHAP",
+    "calibration_slope": 0.98, "decision_curve": True,
+    "code_availability": "github.com/...",  # 可任意形式 URL
+}
+result = auto_evaluate(PARSERS["roc_curve"].parse(data))
+print(result.framework)              # "STARD + TRIPOD + TRIPOD-AI"
+print(result.n_items)                # 8 + 7 + 14 = 29
+for it in result.items:
+    if it.id.startswith("TRIPOD-AI"):
+        print(it.id, it.passed, it.note)
+```
+
+---
+
+## 图表类型与字段契约
+
+详见 `references/chart-types.md`。最小可用字段示例：
+
+```json
+{
+  "title": "OS by treatment",
+  "hazard_ratio": 0.72, "hr_ci": [0.58, 0.89], "p_value": 0.003,
+  "n_total": 480,
+  "arms": [{"name": "E", "median_survival": 19.6}, {"name": "C", "median_survival": 14.2}]
+}
+```
+
+8 类图：`kaplan_meier / forest_plot / roc_curve / box_plot / scatter_plot / bar_chart / heatmap / volcano_plot`。
+
+---
+
+## 期刊风格图注（10 套）
+
+`captions.py` 提供：
+
+| 风格 | 适用 |
+|------|------|
+| `nature` / `lancet` / `jama` / `cell` / `nejm` / `generic` | 英文学术期刊 |
+| **`cma`**（v1.2.0） | 中华医学会系列杂志 |
+| **`cslco`**（v1.2.0） | CSCO 临床肿瘤学指南风格 |
+| **`cebm`**（v1.2.0） | 中国循证医学杂志 |
+| **`zhcore`**（v1.2.0） | 中文核心通用 |
+
+```bash
+python main.py caption --type roc --data sample_roc_ml.json \
+  --style cslco --language zh --figure-id "图3"
+```
+
+---
+
+## 多受众说明（4 类）
+
+`audiences.py` 提供 `researchers / clinicians / patients / policy_makers`，支持 `en` / `zh_CN` 双语。
+
+中国语境 `zh_CN` 包含：
+- clinicians：NCCN/CSCO 推荐级别、医保目录
+- patients：医患沟通语气、就医路径
+- policy_makers：医保谈判议程、卫健委决策
+- researchers：中文统计学术语
+
+---
+
+## 评价框架
+
+| 图表 | 主框架 | 自动追加 |
+|------|--------|----------|
+| KM | CONSORT + Cochrane RoB 2 | — |
+| Forest | Cochrane + GRADE | — |
+| ROC | STARD | TRIPOD (7) + TRIPOD-AI\* (14) |
+| Scatter | STARD + Cochrane | TRIPOD-calibration (3) + TRIPOD-AI\* (14) |
+| Box / Bar | CONSORT + Cochrane | — |
+| Heatmap | MIAME | — |
+| Volcano | MIAME + Cochrane | — |
+
+\* 仅当 `raw["model_type"]` 命中 ML 关键词时追加。
+
+整体得分解释：`overall_score ≥ 0.8` 可信度高、`0.5–0.8` 中等需关注未通过项、`< 0.5` 谨慎引用。
+
+---
+
+## SVG 重绘
+
+`render-svg` 8 类图全部支持，输出独立 SVG（可在浏览器、PPT、docx 中嵌入）：
+
+```bash
+python main.py render-svg --type roc --data sample_roc_ml.json --out fig.svg
+```
+
+嵌入 docx：
+
+```bash
+python main.py to-legend --type roc --data sample_roc_ml.json \
+  --mode docx --with-svg --svg-width 6.0 --out figure.docx
+```
+
+依赖 `python-docx`；`cairosvg` 缺失时 SVG → PNG 自动降级为文字描述（Windows 默认即此情况，不阻塞 docx 输出）。
+
+---
+
+## 端到端示例（ML 预测模型）
+
+```bash
+# 一次性四档产物（v1.3.0）
+python main.py all --type roc --data sample_roc_ml.json --out all_outputs.json
+
+# 或单档
+python main.py caption --type roc --data sample_roc_ml.json --style cma --language zh
+python main.py audiences --type roc --data sample_roc_ml.json --locale zh_CN
+python main.py appraise --type roc --data sample_roc_ml.json --json
+python main.py render-svg --type roc --data sample_roc_ml.json --out fig.svg
+python main.py to-legend --type roc --data sample_roc_ml.json \
+    --mode docx --with-svg --style cma --language zh --out figure_3_zh.docx
+
+# HTML 单文件报告（v1.5.0）
+python main.py to-legend --type roc_ml --mode html --with-svg \
+    --style cma --language zh --figure-number 3 --out figure_3.html
+```
+
+样本 `sample_roc_ml.json` 为 XGBoost ICU 死亡预测，含 11+ ML 字段与 2 条 ROC 曲线。
+
+---
+
+## 测试 & 自检
+
+```bash
+python main.py check                  # 自检：8 类 parser + 各 framework + TRIPOD-AI
+python main.py verify --cleanup       # v1.5.0: 全样本端到端 CI 自检
+python main.py validate --list-schemas # v1.5.0: JSON Schema 自检
+python main.py interpret --type km --inline '{"hazard_ratio":0.72,...}'
+```
+
+---
+
+## 外部接入
+
+`medical-literature-report` 的 `figures-interpretation.md` 是当前接入文档。
+推荐管线：`OCR → interpret → caption + audiences + appraisal → to-legend.docx/html → PPT`。
+
+---
+
+## 版本历史
+
+完整历史见 `CHANGELOG.md`。
+
+- **v1.5.0** (2026-09-05)：bundled samples 打包 + demo + verify + validate + HTML 报告 + TRIPOD-AI sentinel docx
+- **v1.4.0** (2026-09-05)：60+ ML 关键词 + export-csv + pip install + 跨 Skill 共享 StatisticalSummary
+- **v1.3.0** (2026-09-04)：models.py 公开 API；`--all` 一键四档；TRIPOD-AI 雷达图；CSCO 真实语料样本
+- v1.2.0 (2026-09-03)：中文期刊 4 套 + 中国语境受众 + TRIPOD-AI 14 条
+- v1.1.2 (2026-09-01)：8 类 SVG 重绘 + 端到端 docx 导出
+- v1.1.1：PDF 矢量抽取 + 评价自动判定扩面
+- v1.1.0：8 类图表解析 + 多受众 + 风格图注 + 评价
+- v1.0.0：基础框架

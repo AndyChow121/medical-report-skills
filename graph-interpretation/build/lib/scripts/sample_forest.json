@@ -1,0 +1,13 @@
+{
+  "title": "All-cause mortality (random-effects)",
+  "measure": "OR",
+  "model": "random",
+  "studies": [
+    {"name": "Smith 2022", "effect": 0.78, "ci": [0.62, 0.98], "weight": 0.28, "n": 412},
+    {"name": "Lee 2023",   "effect": 0.92, "ci": [0.71, 1.19], "weight": 0.30, "n": 380},
+    {"name": "Wang 2023",  "effect": 0.83, "ci": [0.55, 1.25], "weight": 0.18, "n": 210},
+    {"name": "Park 2024",  "effect": 0.95, "ci": [0.74, 1.22], "weight": 0.24, "n": 305}
+  ],
+  "overall_effect": 0.85,
+  "overall_ci": [0.74, 0.98]
+}

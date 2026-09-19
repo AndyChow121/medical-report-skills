@@ -1,0 +1,436 @@
+{
+  "chart_type": "roc_curve",
+  "figure_id": "图3",
+  "style": "cma",
+  "language": "zh",
+  "locale": "zh_CN",
+  "interpret": {
+    "chart_type": "roc_curve",
+    "title": "ICU 死亡风险 XGBoost 预测模型",
+    "primary": {
+      "measure": "AUC",
+      "value": 0.91,
+      "ci_lower": 0.88,
+      "ci_upper": 0.94,
+      "ci_level": 0.95,
+      "p_value": null,
+      "n": 18420,
+      "ci_str": "95% CI 0.88-0.94"
+    },
+    "secondary": [
+      {
+        "measure": "Youden",
+        "value": 0.72,
+        "ci_lower": null,
+        "ci_upper": null,
+        "ci_level": 0.95,
+        "p_value": null,
+        "n": 18420,
+        "ci_str": ""
+      },
+      {
+        "measure": "AUC",
+        "value": 0.91,
+        "ci_lower": 0.88,
+        "ci_upper": 0.94,
+        "ci_level": 0.95,
+        "p_value": null,
+        "n": null,
+        "ci_str": "95% CI 0.88-0.94"
+      },
+      {
+        "measure": "AUC",
+        "value": 0.74,
+        "ci_lower": 0.7,
+        "ci_upper": 0.78,
+        "ci_level": 0.95,
+        "p_value": null,
+        "n": null,
+        "ci_str": "95% CI 0.7-0.78"
+      }
+    ],
+    "notes": [
+      "AUC ≥0.9：优秀判别力",
+      "最佳截断值=0.42，敏感度=0.84，特异度=0.88，Youden=0.72",
+      "共 2 条 ROC 曲线",
+      "DeLong 比较检验 p=0.012"
+    ],
+    "raw": {
+      "title": "ICU 死亡风险 XGBoost 预测模型",
+      "auc": 0.91,
+      "auc_ci": [
+        0.88,
+        0.94
+      ],
+      "curves": [
+        {
+          "name": "XGBoost (proposed)",
+          "auc": 0.91,
+          "ci": [
+            0.88,
+            0.94
+          ],
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.04,
+              0.18
+            ],
+            [
+              0.1,
+              0.42
+            ],
+            [
+              0.18,
+              0.58
+            ],
+            [
+              0.28,
+              0.7
+            ],
+            [
+              0.4,
+              0.78
+            ],
+            [
+              0.55,
+              0.84
+            ],
+            [
+              0.7,
+              0.88
+            ],
+            [
+              0.85,
+              0.92
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "SAPS-II (baseline)",
+          "auc": 0.74,
+          "ci": [
+            0.7,
+            0.78
+          ],
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.08,
+              0.1
+            ],
+            [
+              0.18,
+              0.22
+            ],
+            [
+              0.3,
+              0.35
+            ],
+            [
+              0.42,
+              0.46
+            ],
+            [
+              0.55,
+              0.56
+            ],
+            [
+              0.65,
+              0.66
+            ],
+            [
+              0.75,
+              0.74
+            ],
+            [
+              0.88,
+              0.84
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      ],
+      "optimal_cutoff": 0.42,
+      "sensitivity": 0.84,
+      "specificity": 0.88,
+      "delong_p": 0.012,
+      "study_type": "both",
+      "model_type": "XGBoost",
+      "data_source": "MIMIC-IV (2008-2019)",
+      "events_per_predictor": 18.5,
+      "split_strategy": "temporal (train 2008-2014, test 2015-2019)",
+      "internal_validation": "10-fold cross-validation",
+      "external_validation_temporal": true,
+      "external_validation_geographic": true,
+      "calibration_slope": 0.98,
+      "calibration_intercept": 0.01,
+      "brier_score": 0.078,
+      "explainability_method": "SHAP",
+      "fairness_assessed": true,
+      "decision_curve": true,
+      "code_availability": "github.com/example/icu-xgb",
+      "model_version_pinned": true,
+      "bias_assessed": true,
+      "population": "ICU 内 24h 收治的成年危重患者",
+      "intervention": "动态监测 + ML 评分预警",
+      "comparison": "传统 SAPS-II / SOFA 评分",
+      "outcome": "28 天全因死亡",
+      "n": 18420,
+      "notes": [
+        "XGBoost 模型在内部 / 时间 / 地理验证均保持 AUC ≥ 0.88",
+        "SHAP 显示 top 3 特征：Lac、GCS、NE%",
+        "亚组公平性在 age/sex 上无显著差异（p>0.4）"
+      ],
+      "cutoff": 0.42,
+      "external_validation": null,
+      "gold_standard": null,
+      "blinded": null,
+      "calibration_plot": null,
+      "hosmer_lemeshow_p": null,
+      "model_coefficients": null,
+      "model_intercept": null,
+      "model_equation": null,
+      "bootstrap_iters": null,
+      "cv_folds": null,
+      "split_sample": null,
+      "external_cohort": null,
+      "nri": null,
+      "idi": null
+    }
+  },
+  "caption": "图3 ICU 死亡风险 XGBoost 预测模型本研究通过roc_curve对数据进行可视化呈现。研究对象及检测方法见正文。结果显示，AUC=0.910（判别力良好）。统计量：（AUC=0.91，95% CI 0.88-0.94，n=18420）。上述结果提示，AUC ≥0.9：优秀判别力；最佳截断值=0.42，敏感度=0.84，特异度=0.88，Youden=0.72；共 2 条 ROC 曲线",
+  "audiences": {
+    "researchers": "【研究型解读】\n标题：ICU 死亡风险 XGBoost 预测模型\n主要效应：AUC=0.910，95% CI 0.88-0.94，n=18420\n关键注释：AUC ≥0.9：优秀判别力；最佳截断值=0.42，敏感度=0.84，特异度=0.88，Youden=0.72；共 2 条 ROC 曲线；DeLong 比较检验 p=0.012",
+    "clinicians": "【临床医生解读】\n该诊断工具判别力良好（AUC=0.910），可在临床场景辅助决策。若涉及收费项目，建议核对该项目是否纳入医保目录。",
+    "patients": "【通俗解读】\n这个检查比较靠谱，能比较好地区分有病和没病。\n（以上内容仅供了解参考，不替代医生面诊，请结合临床实际情况判断；具体治疗方案请遵医嘱。）",
+    "policy_makers": "【政策视角解读】\n该诊断工具达到筛查/早诊技术门槛，已具备大规模推广的技术可行性。若涉及新增收费项目，可考虑纳入医保谈判议程。"
+  },
+  "appraisal": {
+    "chart_type": "roc_curve",
+    "framework": "STARD + TRIPOD + TRIPOD-AI",
+    "n_items": 29,
+    "n_passed": 24,
+    "n_failed": 0,
+    "n_unchecked": 5,
+    "overall_score": 1.0,
+    "items": [
+      {
+        "id": "ROC-1",
+        "question": "是否报告 AUC 与 95% CI？",
+        "passed": true,
+        "note": "",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-2",
+        "question": "是否说明参考标准（gold standard）？",
+        "passed": null,
+        "note": "",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-3",
+        "question": "是否避免 cut-off 优化导致的过度拟合（验证集独立）？",
+        "passed": null,
+        "note": "",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-4",
+        "question": "是否报告敏感度、特异度、PPV、NPV？",
+        "passed": true,
+        "note": "",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-5",
+        "question": "是否在盲法下评估诊断结果？",
+        "passed": null,
+        "note": "",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-6",
+        "question": "样本量是否充分（事件数 ≥ 10 per covariate）？",
+        "passed": true,
+        "note": "EPP=18.5",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-7",
+        "question": "多模型 AUC 是否做 DeLong 检验比较？",
+        "passed": true,
+        "note": "DeLong p=0.012",
+        "framework": "STARD"
+      },
+      {
+        "id": "ROC-8",
+        "question": "最优 cut-off 是否在外部验证集中验证？",
+        "passed": null,
+        "note": "",
+        "framework": "STARD"
+      },
+      {
+        "id": "TRI-1",
+        "question": "是否声明研究类型（开发 / 验证 / 两者）？",
+        "passed": true,
+        "note": "study_type=both",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRI-2",
+        "question": "discrimination 是否报告 C 统计量或 AUC + 95% CI？",
+        "passed": true,
+        "note": "",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRI-3",
+        "question": "calibration 是否评估（calibration plot / Hosmer-Lemeshow / slope+intercept）？",
+        "passed": true,
+        "note": "calibration_slope=0.98",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRI-4",
+        "question": "是否报告完整模型规格（公式 / 截距 / 系数）？",
+        "passed": true,
+        "note": "",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRI-5",
+        "question": "内验证是否实施（bootstrap / cross-validation / split）？",
+        "passed": true,
+        "note": "internal_validation=10-fold cross-validation",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRI-6",
+        "question": "外部验证是否有独立队列？",
+        "passed": null,
+        "note": "",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRI-7",
+        "question": "临床效用是否评估（decision curve / NRI / IDI）？",
+        "passed": true,
+        "note": "decision_curve=True",
+        "framework": "TRIPOD"
+      },
+      {
+        "id": "TRIPOD-AI-1",
+        "question": "是否明确声明所用模型类型（如 XGBoost / ResNet / Transformer）？",
+        "passed": true,
+        "note": "model_type=XGBoost",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-2",
+        "question": "是否报告训练数据来源、时间窗与样本量？",
+        "passed": true,
+        "note": "data_source=MIMIC-IV (2008-2019)",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-3",
+        "question": "事件数 / 预测因子数（EPP）是否报告？通常要求 ≥ 10。",
+        "passed": true,
+        "note": "events_per_predictor=18.5",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-4",
+        "question": "训练 / 测试划分策略（随机 / 时间分层 / 地理划分）是否说明？",
+        "passed": true,
+        "note": "split_strategy=temporal (train 2008-2014, tes",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-5",
+        "question": "内部验证方法（bootstrap / k-fold / split-sample）是否实施？",
+        "passed": true,
+        "note": "internal_validation=10-fold cross-validation",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-6",
+        "question": "是否有时间外部验证（同一机构、不同时间段或前瞻队列）？",
+        "passed": true,
+        "note": "external_validation_temporal=True",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-7",
+        "question": "是否有地理外部验证（独立机构 / 多中心）？",
+        "passed": true,
+        "note": "external_validation_geographic=True",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-8",
+        "question": "calibration（slope / intercept / Brier score）是否报告？",
+        "passed": true,
+        "note": "calibration_slope=0.98",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-9",
+        "question": "可解释性方法（SHAP / LIME / feature importance / attention）是否使用？",
+        "passed": true,
+        "note": "explainability_method=SHAP",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-10",
+        "question": "亚组公平性（age / sex / race / 机构）是否评估？",
+        "passed": true,
+        "note": "fairness_assessed=True",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-11",
+        "question": "决策曲线分析（DCA） / 临床净收益是否给出？",
+        "passed": true,
+        "note": "decision_curve=True",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-12",
+        "question": "代码与训练数据可获得性（GitHub / 公开数据集）是否说明？",
+        "passed": true,
+        "note": "code_availability=github.com/example/icu-xgb",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-13",
+        "question": "模型版本号 / 随机种子 / 超参数是否锁定？",
+        "passed": true,
+        "note": "model_version_pinned=True",
+        "framework": "TRIPOD-AI"
+      },
+      {
+        "id": "TRIPOD-AI-14",
+        "question": "潜在偏倚（数据来源偏差 / 标签偏差 / 选择偏差）是否讨论？",
+        "passed": true,
+        "note": "bias_assessed=True",
+        "framework": "TRIPOD-AI"
+      }
+    ]
+  }
+}

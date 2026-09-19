@@ -1,0 +1,15 @@
+﻿id,question,status,note,raw_value
+TRIPOD-AI-1,是否明确声明所用模型类型（如 XGBoost / ResNet / Transformer）？,通过,model_type=XGBoost,XGBoost
+TRIPOD-AI-2,是否报告训练数据来源、时间窗与样本量？,通过,data_source=MIMIC-IV (2008-2019),MIMIC-IV (2008-2019)
+TRIPOD-AI-3,事件数 / 预测因子数（EPP）是否报告？通常要求 ≥ 10。,通过,events_per_predictor=18.5,18.5
+TRIPOD-AI-4,训练 / 测试划分策略（随机 / 时间分层 / 地理划分）是否说明？,通过,"split_strategy=temporal (train 2008-2014, tes","temporal (train 2008-2014, test 2015-2019)"
+TRIPOD-AI-5,内部验证方法（bootstrap / k-fold / split-sample）是否实施？,通过,internal_validation=10-fold cross-validation,10-fold cross-validation
+TRIPOD-AI-6,是否有时间外部验证（同一机构、不同时间段或前瞻队列）？,通过,external_validation_temporal=True,True
+TRIPOD-AI-7,是否有地理外部验证（独立机构 / 多中心）？,通过,external_validation_geographic=True,True
+TRIPOD-AI-8,calibration（slope / intercept / Brier score）是否报告？,通过,calibration_slope=0.98,0.98
+TRIPOD-AI-9,可解释性方法（SHAP / LIME / feature importance / attention）是否使用？,通过,explainability_method=SHAP,SHAP
+TRIPOD-AI-10,亚组公平性（age / sex / race / 机构）是否评估？,通过,fairness_assessed=True,True
+TRIPOD-AI-11,决策曲线分析（DCA） / 临床净收益是否给出？,通过,decision_curve=True,True
+TRIPOD-AI-12,代码与训练数据可获得性（GitHub / 公开数据集）是否说明？,通过,code_availability=github.com/example/icu-xgb,github.com/example/icu-xgb
+TRIPOD-AI-13,模型版本号 / 随机种子 / 超参数是否锁定？,通过,model_version_pinned=True,True
+TRIPOD-AI-14,潜在偏倚（数据来源偏差 / 标签偏差 / 选择偏差）是否讨论？,通过,bias_assessed=True,True

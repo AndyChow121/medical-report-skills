@@ -1,0 +1,8 @@
+{
+  "title": "Tumor size by genotype",
+  "groups": [
+    {"name": "WT", "q1": 12.0, "median": 18.0, "q3": 25.0, "whisker_low": 8.0, "whisker_high": 35.0, "outliers": [42.0], "n": 36},
+    {"name": "Mut", "q1": 22.0, "median": 32.0, "q3": 40.0, "whisker_low": 15.0, "whisker_high": 52.0, "outliers": [68.0, 71.0], "n": 32},
+    {"name": "KO", "q1": 10.0, "median": 14.0, "q3": 19.0, "whisker_low": 6.0, "whisker_high": 24.0, "outliers": [], "n": 30}
+  ]
+}
