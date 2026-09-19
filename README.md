@@ -20,12 +20,21 @@
 | [Format References (EndNote)](format-references-endnote/README.md) | EndNote 文献排版 | 将手稿中的 [PMID:xxxx] 转为 Word(.docx)，写入 EndNote CWYW… |
 | [Format References (Zotero)](format-references-zotero/README.md) | Zotero 文献排版 | 将手稿中的 [PMID:xxxx] 转为 Word(.docx)，写入原生 Zotero 域代码… |
 
+### 写作与本地化 / Writing & Localization（通用伴随技能）
+
+| Skill (EN) | 名称 (中文) | 一句话简介 (One-liner) |
+|---|---|---|
+| [Natural Rewrite](write/README.md) | 自然改写 | 去除文本中的「AI 味」，把稿件改写得更自然、像人写的；支持中英文润色、发布说明、社交文案、产品本地化审校。 |
+| [Humanizer](humanizer/README.md) | 去 AI 写作痕迹 | 识别并去除 24 类 AI 写作痕迹（夸张象征、营销腔、破折号滥用等），让文字更像人写，保留原意与语气。 |
+| [Style & Journal Rewrite](style-journal-rewrite/README.md) | 文风与期刊格式适配 | 按目标文风或目标期刊格式改写初稿：套用期刊体例与作者文风，支持 .docx/.md/.txt 输入。 |
+
 ## 推荐工作流 / Recommended Workflow
 
 1. **检索与立项**：`reference-retrieval-skill` / `find-paper-references` 找文献；`basic-` / `clinical-research-design-extractor` 提取研究设计。
 2. **解读与精读**：`medical-literature-report` 出中文解读 + PPT；`graph-interpretation` / `figure-legend-gen` 做图表图注；`literature-close-read` 出精读报告。
 3. **写作**：`medical-review-writer` 写综述；`biomedical-sci-manuscript` 起草 SCI 手稿。
-4. **排版**：`format-references-endnote` 或 `format-references-zotero` 完成参考文献终排版。
+4. **润色与适配**：`write` / `humanizer` 去 AI 味、做发布前终稿润色；`style-journal-rewrite` 按目标期刊/文风重排版式与语气。
+5. **排版**：`format-references-endnote` 或 `format-references-zotero` 完成参考文献终排版。
 
 ## 安装 / Install
 

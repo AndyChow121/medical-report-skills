@@ -1,0 +1,27 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node (if any skill scripts use it)
+node_modules/
+
+# Local working files (not part of the skill bundle)
+*.tmp
+*.log
+*.bak
+~$*
+
+# Secrets — never commit tokens or credentials
+*.env
+.env
+*PAT*
+*TOKEN*
